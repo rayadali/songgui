@@ -17,6 +17,7 @@ public class SongLib extends JFrame{
     Song[] songlist;
     DetailsPanel detPanel;
     EditPanel editPanel;
+    String action = "";
     
     
     public SongLib(String title){
