@@ -11,6 +11,7 @@ import java.awt.GridLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
@@ -23,6 +24,9 @@ public class DetailsPanel extends JPanel{
     Song[] library;
     JPanel songListAndLabel;// = new JPanel();
     JPanel songDetailsPanel;
+    //not the best deisng idea but just for the gridlayout
+    JPanel empty;
+    //JList songList;
     JComboBox songList;
     JLabel editingLabel;
     JLabel nameLabel;
@@ -41,12 +45,15 @@ public class DetailsPanel extends JPanel{
         setLayout(new GridLayout(1,2,10,10));
         songListAndLabel = new JPanel(new BorderLayout());
         songDetailsPanel = new JPanel(new BorderLayout());
+        empty = new JPanel(new BorderLayout());
         
         JPanel labelsPanel = new JPanel();
         labelsPanel.setLayout(new GridLayout(4,1,10, 10));
         JPanel areaPanel = new JPanel();
         areaPanel.setLayout(new GridLayout(4,1, 10, 10)); 
         
+        songList = new JComboBox();
+        //songList = new JList(library);
         //songList = new JComboBox(library);
         editingLabel = new JLabel("Edit/Add/Remove");
         editingLabel.setAlignmentX(LEFT_ALIGNMENT);
@@ -71,7 +78,7 @@ public class DetailsPanel extends JPanel{
         yearArea.setBackground(labelsPanel.getBackground());
         yearArea.setBorder(BorderFactory.createLineBorder(Color.black));
         
-        //songListAndLabel.add(songList, BorderLayout.NORTH);
+        songListAndLabel.add(songList, BorderLayout.NORTH);
         songListAndLabel.add(editingLabel, BorderLayout.SOUTH);      
         
         labelsPanel.add(nameLabel);
@@ -89,5 +96,6 @@ public class DetailsPanel extends JPanel{
         
         add(songListAndLabel,BorderLayout.WEST);
         add(songDetailsPanel,BorderLayout.CENTER);
+        add(empty,BorderLayout.EAST);
     }
 }

@@ -5,7 +5,7 @@
  */
 package songlib;
 
-import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import javax.swing.JFrame;
 
 /**
@@ -16,14 +16,17 @@ public class SongLib extends JFrame{
     
     Song[] songlist;
     DetailsPanel detPanel;
+    EditPanel editPanel;
     
     
     public SongLib(String title){
         super(title);
         
         detPanel = new DetailsPanel(this);
-        setLayout(new FlowLayout());
+        editPanel = new EditPanel(this);
+        setLayout(new GridLayout(2,3,10,10));
         add(detPanel);
+        add(editPanel);
     }
 
     /**
