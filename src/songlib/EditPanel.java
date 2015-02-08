@@ -56,6 +56,9 @@ public class EditPanel extends JPanel{
         add = new JButton("Add");
         remove = new JButton("Remove");
         
+        edit.setEnabled(false);
+        remove.setEnabled(false);
+        
         JPanel labelsPanel = new JPanel();
         labelsPanel.setLayout(new GridLayout(4,1,10, 10));
         JPanel areaPanel = new JPanel();
@@ -83,7 +86,9 @@ public class EditPanel extends JPanel{
         yearArea.setBorder(BorderFactory.createLineBorder(Color.black));
         
         cancel = new JButton("Cancel");
+        cancel.setEnabled(false);
         confirm = new JButton("Confirm");
+        confirm.setEnabled(false);
         output = new JTextArea(3,20);
         
         optionsPanel.add(add);
@@ -102,6 +107,8 @@ public class EditPanel extends JPanel{
         
         editDetailsPanel.add(labelsPanel, BorderLayout.WEST);
         editDetailsPanel.add(areaPanel, BorderLayout.CENTER);
+        //default set invisible
+        editDetailsPanel.setVisible(false);
         
         confirmationPanel.add(cancel);
         confirmationPanel.add(confirm);
