@@ -9,25 +9,30 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
 import javax.swing.BorderFactory;
-import javax.swing.JComboBox;
+import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  *
  * @author Rayad
  */
-public class DetailsPanel extends JPanel{
+public class DetailsPanel extends JPanel implements ListSelectionListener{
     
-    Song[] library;
+    SongLib songlib;
+    DefaultListModel library;
     JPanel songListAndLabel;// = new JPanel();
     JPanel songDetailsPanel;
-    //not the best deisng idea but just for the gridlayout
+    //not the best design idea but just for the gridlayout
     JPanel empty;
-    //JList songList;
-    JComboBox songList;
+    JList songList;
+    //JComboBox songList;
     JLabel editingLabel;
     JLabel nameLabel;
     JLabel artistLabel;
@@ -40,6 +45,7 @@ public class DetailsPanel extends JPanel{
     
     public DetailsPanel(SongLib songlib){
         this.library = songlib.songlist;
+        this.songlib = songlib;
         
         //setLayout(new BorderLayout());
         setLayout(new GridLayout(1,2,10,10));
@@ -52,9 +58,19 @@ public class DetailsPanel extends JPanel{
         JPanel areaPanel = new JPanel();
         areaPanel.setLayout(new GridLayout(4,1, 10, 10)); 
         
-        songList = new JComboBox();
-        //songList = new JList(library);
+        //songList = new JComboBox();
+        songList = new JList(library);
         //songList = new JComboBox(library);
+        songList.setLayoutOrientation(JList.VERTICAL);
+        songList.setFixedCellWidth(100);
+        songList.setVisibleRowCount(3);
+        songList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);// 1 list index at a time
+        songList.addListSelectionListener(this);
+        
+        JScrollPane scroll = new JScrollPane(songList);
+        
+        
+        
         editingLabel = new JLabel("Edit/Add/Remove");
         editingLabel.setAlignmentX(LEFT_ALIGNMENT);
         nameLabel = new JLabel("Title: ");
@@ -78,7 +94,9 @@ public class DetailsPanel extends JPanel{
         yearArea.setBackground(labelsPanel.getBackground());
         yearArea.setBorder(BorderFactory.createLineBorder(Color.black));
         
-        songListAndLabel.add(songList, BorderLayout.NORTH);
+        //songList.setSelectedIndex(0);
+        //songListAndLabel.add(songList, BorderLayout.NORTH);
+        songListAndLabel.add(scroll, BorderLayout.NORTH);
         songListAndLabel.add(editingLabel, BorderLayout.SOUTH);      
         
         labelsPanel.add(nameLabel);
@@ -97,5 +115,42 @@ public class DetailsPanel extends JPanel{
         add(songListAndLabel,BorderLayout.WEST);
         add(songDetailsPanel,BorderLayout.CENTER);
         add(empty,BorderLayout.EAST);
+    }
+
+    @Override
+    public void valueChanged(ListSelectionEvent lse) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Song song = songlib.getSelection();
+        update(song);
+        songlib.editPanel.edit.setEnabled(true);
+        songlib.editPanel.remove.setEnabled(true);
+    }
+    
+    public void setSelected(int i){
+        if(i < library.getSize() && library.getSize() > 0){
+            songList.setSelectedIndex(i);
+            Song song = (Song)songList.getSelectedValue();
+            songlib.detPanel.update(song);
+            songlib.editPanel.edit.setEnabled(true);
+            songlib.editPanel.remove.setEnabled(true);
+        }
+    }
+    
+    public void update(Song song){
+        if(song != null){
+            nameArea.setText(song.getName());
+            artistArea.setText(song.getArtist());
+            albumArea.setText(song.getAlbum());
+            yearArea.setText(String.valueOf(song.getYear()));
+        }
+        else{
+            clean();
+        }
+    }
+    public void clean(){
+        nameArea.setText("");
+        artistArea.setText("");
+        albumArea.setText("");
+        yearArea.setText("");
     }
 }

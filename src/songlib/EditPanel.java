@@ -7,12 +7,15 @@ package songlib;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -24,7 +27,7 @@ import javax.swing.JTextField;
  * @author Rayad
  */
 public class EditPanel extends JPanel{
-    Song[] library;
+    DefaultListModel library;
     SongLib songlib;
     JPanel optionsPanel;// = new JPanel();
     JPanel editDetailsPanel;
@@ -166,8 +169,11 @@ class cancelListener implements ActionListener {
                     slwin.editPanel.editDetailsPanel.setVisible(false);
                     slwin.editPanel.confirm.setEnabled(false);
                     slwin.editPanel.cancel.setEnabled(false);
-                    slwin.action = "cancel";
-                    
+                    //slwin.action = "cancel";
+                    slwin.editPanel.nameArea.setText("");
+                    slwin.editPanel.albumArea.setText("");
+                    slwin.editPanel.artistArea.setText("");
+                    slwin.editPanel.yearArea.setText("");
                     
                     slwin.editPanel.nameArea.setEditable(false);
                     slwin.editPanel.albumArea.setEditable(false);
@@ -200,7 +206,7 @@ class confirmListener implements ActionListener {
                     slwin.editPanel.editDetailsPanel.setVisible(false);
                     slwin.editPanel.confirm.setEnabled(false);
                     slwin.editPanel.cancel.setEnabled(false);
-                    slwin.action = "confirm";
+                    //slwin.action = "confirm";
                     
                     
                     slwin.editPanel.nameArea.setEditable(false);
@@ -209,8 +215,55 @@ class confirmListener implements ActionListener {
                     slwin.editPanel.yearArea.setEditable(false);
                     slwin.editPanel.output.setText("You have now updated your library!");
                     
+                    String name = slwin.editPanel.nameArea.getText().trim();
+                    String artist = slwin.editPanel.artistArea.getText().trim();
+                    String album = slwin.editPanel.albumArea.getText().trim();
+                    String yeartemp  = slwin.editPanel.yearArea.getText().trim();
+                    int year;
+                    if(yeartemp.equals("")){
+                        year = 0;
+                    }
+                    else{
+                        year = Integer.parseInt(yeartemp);
+                    }
+                    int index = slwin.getIndex();
+                    
                     //do ops to update the data structures
+                    if(slwin.action.equalsIgnoreCase("add")){
+                        if(!name.equals("") && !artist.equals("")){
+                            Song song = new Song(name, artist, year, album);
+                            slwin.add(song);
+                        }
+                    }
+                    if(slwin.action.equalsIgnoreCase("edit")){
+                        Song song = slwin.getSelection();
+                        //check if empty
+                        if(!name.equals("")) song.setName(name);
+                        if(!artist.equals("")) song.setArtist(artist);
+                        song.setAlbum(album);
+                        song.setYear(year);
+                        
+                    }
+                    if(slwin.action.equalsIgnoreCase("remove")){
+                        Song song = slwin.getSelection();
+                        slwin.delete(song);
+                        if(slwin.songlist.isEmpty()){
+                            slwin.editPanel.edit.setEnabled(false);
+                            slwin.editPanel.remove.setEnabled(false);
+                        }
+                    }
+                    slwin.editPanel.nameArea.setText("");
+                    slwin.editPanel.albumArea.setText("");
+                    slwin.editPanel.artistArea.setText("");
+                    slwin.editPanel.yearArea.setText("");
+                    slwin.setSong(index);
+                    try {
+                        slwin.save();
+                    } catch (IOException ex) {
+                        Logger.getLogger(confirmListener.class.getName()).log(Level.SEVERE, null, ex);
+                    }
 		}
+                
 	}
 }
 
@@ -243,6 +296,11 @@ class editListener implements ActionListener {
                     slwin.editPanel.albumArea.setEditable(true);
                     slwin.editPanel.artistArea.setEditable(true);
                     slwin.editPanel.yearArea.setEditable(true);
+                    Song song = slwin.getSelection();
+                    slwin.editPanel.nameArea.setText(song.getName());
+                    slwin.editPanel.artistArea.setText(song.getArtist());
+                    slwin.editPanel.albumArea.setText(song.getAlbum());
+                    slwin.editPanel.yearArea.setText(String.valueOf(song.getYear()));
                     
                     slwin.editPanel.output.setText("You are now editing.\nClick cancel to abort or confirm to submit your changes.");
 		}
@@ -298,7 +356,7 @@ class removeListener implements ActionListener {
                     //set text area editable
                     //update buttons
                     //set action button for the confirm button
-                    slwin.editPanel.editDetailsPanel.setVisible(true);
+                    //slwin.editPanel.editDetailsPanel.setVisible(true);
                     slwin.editPanel.cancel.setEnabled(true);
                     slwin.action = "remove";
                     slwin.editPanel.confirm.setEnabled(true);
