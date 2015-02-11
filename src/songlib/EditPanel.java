@@ -302,7 +302,7 @@ class editListener implements ActionListener {
                     slwin.editPanel.albumArea.setText(song.getAlbum());
                     slwin.editPanel.yearArea.setText(String.valueOf(song.getYear()));
                     
-                    slwin.editPanel.output.setText("You are now editing.\nClick cancel to abort or confirm to submit your changes.");
+                    slwin.editPanel.output.setText("You are now editing.\nClick cancel to abort or confirm to  '\n' submit your changes.");
 		}
         }
 }
@@ -335,7 +335,7 @@ class addListener implements ActionListener {
                     slwin.editPanel.albumArea.setEditable(true);
                     slwin.editPanel.artistArea.setEditable(true);
                     slwin.editPanel.yearArea.setEditable(true);
-                    slwin.editPanel.output.setText("You are now adding a song.\nClick cancel to abort or confirm to submit your changes.");
+                    slwin.editPanel.output.setText("You are now adding a song.\nClick cancel to abort or confirm to \nsubmit your changes.\nPlease note year will be set to 0 if left \nempty");
                 }
         }
 }
@@ -368,7 +368,7 @@ class removeListener implements ActionListener {
                     slwin.editPanel.albumArea.setEditable(true);
                     slwin.editPanel.artistArea.setEditable(true);
                     */
-                    slwin.editPanel.output.setText("You are now removing this song, please review.\nClick cancel to abort or confirm to submit your changes.");
+                    slwin.editPanel.output.setText("You are now removing this song, please review.\nClick cancel to abort or confirm to \nsubmit your changes.");
 		}
         }
 }
