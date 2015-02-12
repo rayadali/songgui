@@ -8,6 +8,10 @@ package songlib;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.List;
+import java.text.Collator;
+import java.util.ArrayList;
+import java.util.Collections;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
@@ -141,7 +145,9 @@ public class DetailsPanel extends JPanel implements ListSelectionListener{
             nameArea.setText(song.getName());
             artistArea.setText(song.getArtist());
             albumArea.setText(song.getAlbum());
-            yearArea.setText(String.valueOf(song.getYear()));
+            String check = String.valueOf(song.getYear());
+            if (check.equals("0")) check = "";
+            yearArea.setText(check);
         }
         else{
             clean();
@@ -153,4 +159,31 @@ public class DetailsPanel extends JPanel implements ListSelectionListener{
         albumArea.setText("");
         yearArea.setText("");
     }
+    
+    public void sortSongs(DefaultListModel songs) {
+     int numItems = songs.getSize();
+     Song[] a = new Song[numItems];
+     for (int i=0;i<numItems;i++){
+       a[i] = (Song)songs.getElementAt(i);
+       }
+     sortArray(a);
+     // Locale loc = Locale.FRENCH;
+     // sortArray(Collator.getInstance(loc), (String[])a);
+     for (int i=0;i<numItems;i++) {
+       songs.setElementAt(a[i], i);
+}
+}
+    private static void sortArray(Song[] array) {
+       Song temp;
+       if (array.length == 1) return;
+       for (int i = 0; i < array.length; i++) {
+        for (int j = i + 1; j < array.length; j++) {
+          if(array[i].compareTo(array[j])  > 0 ) {
+        temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+        }
+      }
+    } 
+   }
 }

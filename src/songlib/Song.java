@@ -9,7 +9,7 @@ package songlib;
  *
  * @author Rayad
  */
-public class Song {
+public class Song implements Comparable<Song>{
     private String name = "";
     private String artist = "";
     private String album = "";
@@ -87,8 +87,14 @@ public class Song {
     
     //std toString method
     
+    @Override
     public String toString(){
         //Using this sytnax for now
         return name + " - " + artist;
+    }
+
+    @Override
+    public int compareTo(Song t) {
+        return (this.getName().compareTo(t.getName()));
     }
 }

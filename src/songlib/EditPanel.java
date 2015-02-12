@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -143,6 +144,17 @@ public class EditPanel extends JPanel{
         add(confirmationPanel);
     }
     
+    //helper method
+     protected String refine(String attribute){
+         if(attribute.equals("")){
+             return attribute;
+         }
+         else{
+              String refined = attribute.substring(0, 1).toUpperCase() + attribute.substring(1);
+                    return refined;
+         }
+}
+    
 }
 
 
@@ -215,10 +227,19 @@ class confirmListener implements ActionListener {
                     slwin.editPanel.yearArea.setEditable(false);
                     slwin.editPanel.output.setText("You have now updated your library!");
                     
-                    String name = slwin.editPanel.nameArea.getText().trim();
-                    String artist = slwin.editPanel.artistArea.getText().trim();
-                    String album = slwin.editPanel.albumArea.getText().trim();
+                    String nametemp = slwin.editPanel.nameArea.getText().trim();
+                    String artisttemp = slwin.editPanel.artistArea.getText().trim();
+                    String albumtemp = slwin.editPanel.albumArea.getText().trim();
                     String yeartemp  = slwin.editPanel.yearArea.getText().trim();
+                    //hardcoded fix, maybe make a function?
+                    String name = slwin.editPanel.refine(nametemp);
+                    String artist = slwin.editPanel.refine(artisttemp);
+                    String album;
+                    if(!albumtemp.equals("")){
+                        album = albumtemp.substring(0, 1).toUpperCase() + albumtemp.substring(1);
+                    }
+                    else album = albumtemp;
+                    
                     int year;
                     if(yeartemp.equals("")){
                         year = 0;
@@ -227,26 +248,38 @@ class confirmListener implements ActionListener {
                         year = Integer.parseInt(yeartemp);
                     }
                     int index = slwin.getIndex();
-                    
+                    boolean dupe = false;
                     //do ops to update the data structures
                     if(slwin.action.equalsIgnoreCase("add")){
-                        if(!name.equals("") && !artist.equals("")){
-                            Song song = new Song(name, artist, year, album);
+                    	dupe = duplicates(name, artist);
+                    	//Song tempsong =  new Song(name, artist);
+                    	if(dupe){
+                    		System.out.println("found dupe");
+                            slwin.editPanel.output.setText("You have created a duplicate song!");
+                    	}
+                    	else if(name.equals("") || artist.equals("")){
+                    		slwin.editPanel.output.setText("Please enter name AND artist minimum!");
+                        }
+                        else{
+                        	Song song = new Song(name, artist, year, album);
                             slwin.add(song);
                         }
                     }
                     if(slwin.action.equalsIgnoreCase("edit")){
                         Song song = slwin.getSelection();
                         //check if empty
-                        if(!name.equals("")) song.setName(name);
-                        if(!artist.equals("")) song.setArtist(artist);
-                        song.setAlbum(album);
-                        song.setYear(year);
+                        if (duplicates(name, artist)) slwin.editPanel.output.setText("You have created a duplicate song.\n Operation Aborted!");
+                        else if(!name.equals("") && !artist.equals("")){
+                        	song.setName(name);
+                        	song.setArtist(artist);
+                        	song.setAlbum(album);
+                        	song.setYear(year);
                         
                     }
+                    }
                     if(slwin.action.equalsIgnoreCase("remove")){
-                        Song song = slwin.getSelection();
-                        slwin.delete(song);
+                        Song delete = slwin.getSelection();
+                        slwin.delete(delete);
                         if(slwin.songlist.isEmpty()){
                             slwin.editPanel.edit.setEnabled(false);
                             slwin.editPanel.remove.setEnabled(false);
@@ -257,6 +290,7 @@ class confirmListener implements ActionListener {
                     slwin.editPanel.artistArea.setText("");
                     slwin.editPanel.yearArea.setText("");
                     slwin.setSong(index);
+                    slwin.detPanel.sortSongs(slwin.songlist);
                     try {
                         slwin.save();
                     } catch (IOException ex) {
@@ -265,7 +299,21 @@ class confirmListener implements ActionListener {
 		}
                 
 	}
+
+	private boolean duplicates(String name, String artist) {
+		//System.out.println("name is " + name);
+	    	 for(int i = 0; i <slwin.songlist.getSize(); i++){
+	         	Song temp = (Song)slwin.songlist.elementAt(i);
+	         	//System.out.println("going thru name is " + temp.getName());
+	         	if(temp.getName().equals(name)&& temp.getArtist().equals(artist)){
+	                 return true;
+	         	}
+	         }
+	    	 return false;
+	     
+	}
 }
+
 
 
 class editListener implements ActionListener {

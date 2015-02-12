@@ -39,7 +39,7 @@ public class SongLib extends JFrame{
         setLayout(new GridLayout(2,3,10,10));
         add(detPanel);
         add(editPanel);
-        
+        detPanel.sortSongs(detPanel.library);
         detPanel.songList.setSelectedIndex(0);
     }
     //load the songs
